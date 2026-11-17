@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kjr-coliving.vercel.app/sitemap.xml
