@@ -76,7 +76,7 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="hero-image relative mx-auto aspect-[9/16] w-full max-w-xs overflow-hidden rounded-[28px] shadow-[0_30px_80px_rgba(43,42,40,0.18)] sm:max-w-sm lg:max-w-none lg:aspect-[4/5]">
+        <div className="hero-image relative mx-auto aspect-[4/5] w-full max-w-xs overflow-hidden rounded-[28px] shadow-[0_30px_80px_rgba(43,42,40,0.18)] sm:max-w-sm md:aspect-[3/4] md:max-w-md lg:mx-0 lg:aspect-[4/5] lg:max-w-none">
           <video
             ref={videoRef}
             src="/gallery/videos/montage.mp4"
