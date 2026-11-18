@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
-import { ArrowRight, Images, MapPin, MessageCircle } from 'lucide-react'
+import { ArrowRight, Images, MessageCircle } from 'lucide-react'
 import { PROPERTIES } from '../data/properties'
 import { GALLERY } from '../data/gallery'
 import { getPhotoTour } from '../data/photoTour'
@@ -83,12 +83,6 @@ export function Properties() {
               <div className="flex flex-1 flex-col p-6">
                 <h3 className="font-display text-2xl text-charcoal">{property.name}</h3>
                 <p className="mt-1 text-sm font-medium text-terracotta">{property.tagline}</p>
-                {property.location && (
-                  <p className="mt-2 flex items-center gap-1.5 text-xs text-muted">
-                    <MapPin className="h-3.5 w-3.5 text-terracotta" />
-                    {property.location}
-                  </p>
-                )}
                 <p className="mt-3 flex-1 text-sm leading-relaxed text-body">
                   {property.description}
                   {property.comingSoon && ' Opening soon — reach out to be notified first.'}
