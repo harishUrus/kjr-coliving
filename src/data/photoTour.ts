@@ -24,6 +24,12 @@ export const PHOTO_TOURS: PhotoTour[] = [
     propertySlug: 'kjr-elite',
     categories: [
       {
+        id: 'exterior',
+        label: 'Exterior',
+        thumbnail: '/gallery/elite/exterior-1.jpg',
+        items: [{ src: '/gallery/elite/exterior-1.jpg', type: 'image' }],
+      },
+      {
         id: 'bedroom',
         label: 'Bedroom',
         thumbnail: '/gallery/elite/bedroom-1.jpg',

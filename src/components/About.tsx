@@ -46,7 +46,11 @@ export function About() {
             />
           </div>
           <div className="mt-8 aspect-[3/4] overflow-hidden rounded-3xl">
-            <img src="/gallery/room-4.jpg" alt="Window view at KJR Co-Living" className="h-full w-full object-cover" />
+            <img
+              src="/gallery/elite/exterior-1.jpg"
+              alt="KJR Elite building exterior"
+              className="h-full w-full object-cover"
+            />
           </div>
         </div>
 
