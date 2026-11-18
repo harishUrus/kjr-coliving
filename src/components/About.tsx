@@ -39,7 +39,11 @@ export function About() {
       <div className="mx-auto grid max-w-[1440px] items-center gap-10 lg:grid-cols-2 lg:gap-16">
         <div className="about-reveal order-2 grid grid-cols-2 gap-4 lg:order-1">
           <div className="aspect-[3/4] overflow-hidden rounded-3xl">
-            <img src="/gallery/room-2.jpg" alt="Shared room at KJR Co-Living" className="h-full w-full object-cover" />
+            <img
+              src="/gallery/signature/exterior-1.jpg"
+              alt="KJR Signature building exterior"
+              className="h-full w-full object-cover"
+            />
           </div>
           <div className="mt-8 aspect-[3/4] overflow-hidden rounded-3xl">
             <img src="/gallery/room-4.jpg" alt="Window view at KJR Co-Living" className="h-full w-full object-cover" />
