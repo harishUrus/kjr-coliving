@@ -1,8 +1,21 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
+import { CircleCheck, MapPin, Sofa, Users } from 'lucide-react'
 
 gsap.registerPlugin(ScrollTrigger)
+
+const HIGHLIGHTS = [
+  'Live comfortably, but keep your own private space.',
+  'Fully furnished, move-in-ready rooms across every property.',
+  'Talk directly to the KJR team — no brokers, no middlemen.',
+]
+
+const GLANCE = [
+  { icon: Sofa, label: '3 Properties', sub: 'Elite · Signature · Platinum' },
+  { icon: MapPin, label: 'Chennai', sub: 'Co-living, built for the city' },
+  { icon: Users, label: 'Flexible Sharing', sub: 'Options for every budget' },
+]
 
 export function About() {
   const ref = useRef<HTMLElement>(null)
@@ -49,6 +62,29 @@ export function About() {
             facilities available at our properties, our team helps you understand the available
             choices and find an accommodation option that suits your requirements.
           </p>
+
+          <ul className="about-reveal mt-7 flex flex-col gap-3">
+            {HIGHLIGHTS.map((text) => (
+              <li key={text} className="flex items-start gap-2.5 text-sm text-body sm:text-base">
+                <CircleCheck className="mt-0.5 h-5 w-5 flex-shrink-0 text-terracotta" />
+                <span>{text}</span>
+              </li>
+            ))}
+          </ul>
+
+          <div className="about-reveal mt-8 grid grid-cols-1 gap-4 border-t border-charcoal/10 pt-7 sm:grid-cols-3">
+            {GLANCE.map(({ icon: Icon, label, sub }) => (
+              <div key={label} className="flex items-start gap-3">
+                <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-terracotta/12 text-terracotta">
+                  <Icon className="h-4.5 w-4.5" />
+                </span>
+                <div>
+                  <p className="font-display text-base text-charcoal">{label}</p>
+                  <p className="text-xs text-muted">{sub}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
