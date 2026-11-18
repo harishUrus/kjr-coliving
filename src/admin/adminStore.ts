@@ -1,47 +1,52 @@
-import { useMemo, useState } from 'react'
-import { GALLERY, type GalleryMedia } from '../data/gallery'
+import { useCallback, useEffect, useState } from 'react'
+import { deleteGalleryItem, fetchGalleryItems, uploadGalleryItem, type AdminApiItem } from '../lib/adminApi'
 
-export type AdminMediaItem = GalleryMedia & { id: string }
+export type PropertySlug = 'kjr-elite' | 'kjr-signature' | 'kjr-platinum'
 
-let idCounter = 0
-function nextId() {
-  idCounter += 1
-  return `seed-${idCounter}`
-}
-
-const SEED: AdminMediaItem[] = GALLERY.map((m) => ({ ...m, id: nextId() }))
+const PROPERTIES: PropertySlug[] = ['kjr-elite', 'kjr-signature', 'kjr-platinum']
 
 /**
- * In-memory only (resets on page refresh) — there is no backend yet to
- * persist uploads/deletes across visitors or sessions. This exists so the
- * Owner can exercise the full upload/delete workflow and UI today; swap the
- * add/remove functions here for real S3 presigned-upload + API calls once
- * AWS is connected. The public site's gallery is NOT wired to this store,
- * since changes here cannot be made visible to other visitors without a
- * real backend.
+ * Backed by Vercel Blob storage via /api/gallery. Uploads and deletes made
+ * here persist for real and are fetched by the public site's Properties
+ * section, so they are visible to every visitor — not just this browser tab.
+ * Swap this for the AWS S3 + RDS/Cognito equivalent when that's ready; the
+ * admin UI and public-site merge logic can stay the same shape.
  */
-export function useAdminGallery() {
-  const [items, setItems] = useState<AdminMediaItem[]>(SEED)
+export function useAdminGallery(token: string) {
+  const [byProperty, setByProperty] = useState<Record<PropertySlug, AdminApiItem[]>>({
+    'kjr-elite': [],
+    'kjr-signature': [],
+    'kjr-platinum': [],
+  })
+  const [loading, setLoading] = useState(true)
 
-  const byProperty = useMemo(() => {
-    const map: Record<string, AdminMediaItem[]> = { 'kjr-elite': [], 'kjr-signature': [], 'kjr-platinum': [] }
-    for (const item of items) map[item.propertySlug]?.push(item)
-    return map
-  }, [items])
+  const refresh = useCallback(async () => {
+    setLoading(true)
+    const entries = await Promise.all(
+      PROPERTIES.map(async (slug) => [slug, await fetchGalleryItems(slug).catch(() => [])] as const),
+    )
+    setByProperty(Object.fromEntries(entries) as Record<PropertySlug, AdminApiItem[]>)
+    setLoading(false)
+  }, [])
 
-  function addFiles(propertySlug: AdminMediaItem['propertySlug'], files: FileList | File[]) {
-    const newItems: AdminMediaItem[] = Array.from(files).map((file) => ({
-      id: nextId(),
-      src: URL.createObjectURL(file),
-      type: file.type.startsWith('video') ? 'video' : 'image',
-      propertySlug,
+  useEffect(() => {
+    refresh()
+  }, [refresh])
+
+  async function addFiles(propertySlug: PropertySlug, category: string, files: FileList | File[]) {
+    for (const file of Array.from(files)) {
+      const item = await uploadGalleryItem(token, propertySlug, category, file)
+      setByProperty((prev) => ({ ...prev, [propertySlug]: [...prev[propertySlug], item] }))
+    }
+  }
+
+  async function removeItem(propertySlug: PropertySlug, item: AdminApiItem) {
+    await deleteGalleryItem(token, item.url)
+    setByProperty((prev) => ({
+      ...prev,
+      [propertySlug]: prev[propertySlug].filter((i) => i.id !== item.id),
     }))
-    setItems((prev) => [...prev, ...newItems])
   }
 
-  function removeItem(id: string) {
-    setItems((prev) => prev.filter((i) => i.id !== id))
-  }
-
-  return { byProperty, addFiles, removeItem }
+  return { byProperty, loading, addFiles, removeItem, refresh }
 }

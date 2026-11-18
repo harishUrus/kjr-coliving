@@ -14,6 +14,7 @@ import { Faq } from './components/Faq'
 import { FinalCta } from './components/FinalCta'
 import { Footer } from './components/Footer'
 import { WhatsAppButton } from './components/WhatsAppButton'
+import { ScheduleVisitButton } from './components/ScheduleVisitButton'
 
 function App() {
   useLenis()
@@ -36,6 +37,7 @@ function App() {
         <FinalCta />
       </main>
       <Footer />
+      <ScheduleVisitButton />
       <WhatsAppButton />
     </div>
   )

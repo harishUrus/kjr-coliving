@@ -1,26 +1,25 @@
 import { useState } from 'react'
 import { Lock } from 'lucide-react'
+import { adminLogin } from '../lib/adminApi'
 
-// Interim single-owner gate while Cognito is not yet connected. Set
-// VITE_ADMIN_USERNAME / VITE_ADMIN_PASSWORD in a local .env file (never
-// commit it) — this is NOT secure authentication (the check runs in the
-// browser), so treat this dashboard as low-sensitivity until it is backed
-// by real Cognito auth.
-const ADMIN_USERNAME = import.meta.env.VITE_ADMIN_USERNAME as string | undefined
-const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD as string | undefined
-
-export function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
+export function AdminLogin({ onSuccess }: { onSuccess: (token: string) => void }) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (ADMIN_USERNAME && ADMIN_PASSWORD && username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-      sessionStorage.setItem('kjr_admin_authed', '1')
-      onSuccess()
-    } else {
+    setLoading(true)
+    setError(false)
+    try {
+      const token = await adminLogin(username, password)
+      sessionStorage.setItem('kjr_admin_token', token)
+      onSuccess(token)
+    } catch {
       setError(true)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -65,17 +64,13 @@ export function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
         </label>
 
         {error && <p className="mt-3 text-sm text-red-600">Incorrect username or password.</p>}
-        {(!ADMIN_USERNAME || !ADMIN_PASSWORD) && (
-          <p className="mt-3 text-xs text-red-600">
-            VITE_ADMIN_USERNAME / VITE_ADMIN_PASSWORD are not configured for this build.
-          </p>
-        )}
 
         <button
           type="submit"
-          className="mt-6 w-full rounded-2xl bg-terracotta px-6 py-3.5 text-sm font-semibold text-white transition-transform duration-300 hover:-translate-y-0.5"
+          disabled={loading}
+          className="mt-6 w-full rounded-2xl bg-terracotta px-6 py-3.5 text-sm font-semibold text-white transition-transform duration-300 hover:-translate-y-0.5 disabled:opacity-60"
         >
-          Sign In
+          {loading ? 'Signing In…' : 'Sign In'}
         </button>
       </form>
     </div>

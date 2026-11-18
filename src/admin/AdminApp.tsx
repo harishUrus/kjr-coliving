@@ -4,18 +4,31 @@ import { PROPERTIES } from '../data/properties'
 import { Logo } from '../components/Logo'
 import { AdminLogin } from './AdminLogin'
 import { AdminGalleryManager } from './AdminGalleryManager'
-import { useAdminGallery } from './adminStore'
+import { useAdminGallery, type PropertySlug } from './adminStore'
 
 export function AdminApp() {
-  const [authed, setAuthed] = useState(() => sessionStorage.getItem('kjr_admin_authed') === '1')
-  const [activeProperty, setActiveProperty] = useState<
-    'kjr-elite' | 'kjr-signature' | 'kjr-platinum' | null
-  >(null)
-  const { byProperty, addFiles, removeItem } = useAdminGallery()
+  const [token, setToken] = useState<string | null>(() => sessionStorage.getItem('kjr_admin_token'))
+  const [activeProperty, setActiveProperty] = useState<PropertySlug | null>(null)
 
-  if (!authed) {
-    return <AdminLogin onSuccess={() => setAuthed(true)} />
+  if (!token) {
+    return <AdminLogin onSuccess={setToken} />
   }
+
+  return <AdminDashboard token={token} activeProperty={activeProperty} setActiveProperty={setActiveProperty} onSignOut={() => setToken(null)} />
+}
+
+function AdminDashboard({
+  token,
+  activeProperty,
+  setActiveProperty,
+  onSignOut,
+}: {
+  token: string
+  activeProperty: PropertySlug | null
+  setActiveProperty: (slug: PropertySlug | null) => void
+  onSignOut: () => void
+}) {
+  const { byProperty, loading, addFiles, removeItem } = useAdminGallery(token)
 
   return (
     <div className="min-h-screen bg-cream">
@@ -24,8 +37,8 @@ export function AdminApp() {
         <button
           type="button"
           onClick={() => {
-            sessionStorage.removeItem('kjr_admin_authed')
-            setAuthed(false)
+            sessionStorage.removeItem('kjr_admin_token')
+            onSignOut()
           }}
           className="flex items-center gap-2 text-sm font-semibold text-charcoal hover:text-terracotta"
         >
@@ -36,9 +49,9 @@ export function AdminApp() {
 
       <div className="mx-auto max-w-5xl px-5 py-6">
         <div className="rounded-xl border border-terracotta/30 bg-terracotta/8 px-4 py-3 text-xs text-charcoal">
-          <strong>Preview mode:</strong> uploads and deletes here are local to this browser tab and
-          reset on refresh — this is not yet connected to real storage (AWS S3 + RDS). The public
-          website is not affected by changes made here.
+          <strong>Live:</strong> uploads and deletes here are stored in Vercel Blob storage and appear
+          on the public site for every visitor. This is an interim store ahead of the full AWS
+          (S3 + RDS/Cognito) backend.
         </div>
       </div>
 
@@ -46,13 +59,14 @@ export function AdminApp() {
         <AdminGalleryManager
           propertySlug={activeProperty}
           items={byProperty[activeProperty]}
-          onAddFiles={(files) => addFiles(activeProperty, files)}
-          onRemove={removeItem}
+          onAddFiles={(category, files) => addFiles(activeProperty, category, files)}
+          onRemove={(item) => removeItem(activeProperty, item)}
           onBack={() => setActiveProperty(null)}
         />
       ) : (
         <div className="mx-auto max-w-5xl px-5 pb-16">
           <h1 className="font-display text-2xl text-charcoal">Manage Property Galleries</h1>
+          {loading && <p className="mt-2 text-sm text-muted">Loading live gallery…</p>}
           <div className="mt-6 grid gap-5 sm:grid-cols-3">
             {PROPERTIES.map((property) => {
               const items = byProperty[property.slug]

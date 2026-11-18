@@ -1,11 +1,12 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
 import { ArrowRight, Images, MapPin, MessageCircle, Star } from 'lucide-react'
 import { PROPERTIES } from '../data/properties'
 import { GALLERY } from '../data/gallery'
-import { getPhotoTour } from '../data/photoTour'
+import { getPhotoTour, type PhotoTour } from '../data/photoTour'
 import { scrollToAppointmentForm, WHATSAPP_NUMBER } from '../lib/config'
+import { fetchGalleryItems, type AdminApiItem } from '../lib/adminApi'
 import { PropertyGalleryModal } from './PropertyGalleryModal'
 import { PhotoTourModal } from './PhotoTourModal'
 
@@ -14,6 +15,21 @@ gsap.registerPlugin(ScrollTrigger)
 export function Properties() {
   const ref = useRef<HTMLElement>(null)
   const [openGallery, setOpenGallery] = useState<string | null>(null)
+  const [adminItems, setAdminItems] = useState<AdminApiItem[]>([])
+
+  useEffect(() => {
+    setAdminItems([])
+    if (!openGallery) return
+    let cancelled = false
+    fetchGalleryItems(openGallery)
+      .then((items) => {
+        if (!cancelled) setAdminItems(items)
+      })
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+  }, [openGallery])
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -29,10 +45,45 @@ export function Properties() {
     return () => ctx.revert()
   }, [])
 
-  const activeMedia = openGallery ? GALLERY.filter((m) => m.propertySlug === openGallery) : []
-  const activeTour = openGallery
+  const baseTour = openGallery
     ? getPhotoTour(openGallery as 'kjr-elite' | 'kjr-signature' | 'kjr-platinum')
     : null
+
+  const activeTour: PhotoTour | null = useMemo(() => {
+    if (!baseTour) return null
+    const categories = baseTour.categories.map((cat) => ({
+      ...cat,
+      items: [
+        ...cat.items,
+        ...adminItems
+          .filter((i) => i.category === cat.id)
+          .map((i) => ({ src: i.url, type: i.type })),
+      ],
+    }))
+
+    const existingIds = new Set(baseTour.categories.map((c) => c.id))
+    const extraCategoryIds = [...new Set(adminItems.map((i) => i.category))].filter(
+      (id) => !existingIds.has(id),
+    )
+    for (const id of extraCategoryIds) {
+      const catItems = adminItems.filter((i) => i.category === id)
+      categories.push({
+        id,
+        label: id.charAt(0).toUpperCase() + id.slice(1),
+        thumbnail: catItems[0].url,
+        items: catItems.map((i) => ({ src: i.url, type: i.type })),
+      })
+    }
+
+    return { ...baseTour, categories }
+  }, [baseTour, adminItems])
+
+  const activeMedia = openGallery
+    ? [
+        ...GALLERY.filter((m) => m.propertySlug === openGallery),
+        ...adminItems.map((i) => ({ src: i.url, type: i.type, propertySlug: i.propertySlug })),
+      ]
+    : []
   const activeProperty = PROPERTIES.find((p) => p.slug === openGallery)
 
   return (
