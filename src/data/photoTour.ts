@@ -97,10 +97,7 @@ export const PHOTO_TOURS: PhotoTour[] = [
         id: 'elevator',
         label: 'Elevator',
         thumbnail: '/gallery/signature/elevator-1.jpg',
-        items: [
-          { src: '/gallery/signature/elevator-1.jpg', type: 'image' },
-          { src: '/gallery/signature/elevator-2.jpg', type: 'image' },
-        ],
+        items: [{ src: '/gallery/signature/elevator-1.jpg', type: 'image' }],
       },
     ],
   },
