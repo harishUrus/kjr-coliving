@@ -10,6 +10,7 @@ export type Property = {
   location: string | null
   roomCategories: RoomCategory[] | null
   heroImage: string
+  heroVideo?: string
   comingSoon?: boolean
 }
 
@@ -20,9 +21,10 @@ export const PROPERTIES: Property[] = [
     tagline: 'Comfortable, well-kept rooms for everyday living.',
     description:
       'KJR Elite offers furnished PG accommodation designed around comfort and convenience, with clean common areas and attentive upkeep.',
-    location: null,
+    location: 'Karapakkam, Chennai',
     roomCategories: null,
     heroImage: '/gallery/room-1.jpg',
+    heroVideo: '/gallery/videos/video-ad.mp4',
   },
   {
     slug: 'kjr-signature',

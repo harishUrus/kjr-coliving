@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
-import { ArrowRight, Images, MessageCircle } from 'lucide-react'
+import { ArrowRight, Images, MapPin, MessageCircle } from 'lucide-react'
 import { PROPERTIES } from '../data/properties'
 import { GALLERY } from '../data/gallery'
 import { getPhotoTour } from '../data/photoTour'
@@ -56,12 +56,24 @@ export function Properties() {
               className="property-reveal flex flex-col overflow-hidden rounded-[28px] border border-charcoal/8 bg-white shadow-[0_20px_60px_rgba(43,42,40,0.06)] transition-transform duration-300 hover:-translate-y-1.5"
             >
               <div className="relative aspect-[4/3] overflow-hidden">
-                <img
-                  src={property.heroImage}
-                  alt={property.name}
-                  loading="lazy"
-                  className={`h-full w-full object-cover ${property.comingSoon ? 'grayscale-[35%]' : ''}`}
-                />
+                {property.heroVideo ? (
+                  <video
+                    src={property.heroVideo}
+                    poster={property.heroImage}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <img
+                    src={property.heroImage}
+                    alt={property.name}
+                    loading="lazy"
+                    className={`h-full w-full object-cover ${property.comingSoon ? 'grayscale-[35%]' : ''}`}
+                  />
+                )}
                 {property.comingSoon && (
                   <span className="absolute left-4 top-4 rounded-full bg-charcoal px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wide text-white shadow">
                     Coming Soon
@@ -71,6 +83,12 @@ export function Properties() {
               <div className="flex flex-1 flex-col p-6">
                 <h3 className="font-display text-2xl text-charcoal">{property.name}</h3>
                 <p className="mt-1 text-sm font-medium text-terracotta">{property.tagline}</p>
+                {property.location && (
+                  <p className="mt-2 flex items-center gap-1.5 text-xs text-muted">
+                    <MapPin className="h-3.5 w-3.5 text-terracotta" />
+                    {property.location}
+                  </p>
+                )}
                 <p className="mt-3 flex-1 text-sm leading-relaxed text-body">
                   {property.description}
                   {property.comingSoon && ' Opening soon — reach out to be notified first.'}
