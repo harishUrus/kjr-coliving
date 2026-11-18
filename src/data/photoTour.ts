@@ -58,11 +58,48 @@ export const PHOTO_TOURS: PhotoTour[] = [
     propertySlug: 'kjr-signature',
     categories: [
       {
-        id: 'video-tour',
-        label: 'Video Tour',
-        thumbnail: '/gallery/signature-poster.jpg',
+        id: 'exterior',
+        label: 'Exterior',
+        thumbnail: '/gallery/signature/exterior-1.jpg',
+        items: [{ src: '/gallery/signature/exterior-1.jpg', type: 'image' }],
+      },
+      {
+        id: 'bedroom',
+        label: 'Bedroom',
+        thumbnail: '/gallery/signature/bedroom-1.jpg',
+        items: [{ src: '/gallery/signature/bedroom-1.jpg', type: 'image' }],
+      },
+      {
+        id: 'wardrobe',
+        label: 'Wardrobe',
+        thumbnail: '/gallery/signature/wardrobe-1.jpg',
+        items: [{ src: '/gallery/signature/wardrobe-1.jpg', type: 'image' }],
+      },
+      {
+        id: 'bathroom',
+        label: 'Full Bathroom',
+        thumbnail: '/gallery/signature/bathroom-1.jpg',
+        items: [{ src: '/gallery/signature/bathroom-1.jpg', type: 'image' }],
+      },
+      {
+        id: 'dining',
+        label: 'Dining Area',
+        thumbnail: '/gallery/signature/dining-1.jpg',
+        items: [{ src: '/gallery/signature/dining-1.jpg', type: 'image' }],
+      },
+      {
+        id: 'laundry',
+        label: 'Laundry',
+        thumbnail: '/gallery/signature/laundry-1.jpg',
+        items: [{ src: '/gallery/signature/laundry-1.jpg', type: 'image' }],
+      },
+      {
+        id: 'elevator',
+        label: 'Elevator',
+        thumbnail: '/gallery/signature/elevator-1.jpg',
         items: [
-          { src: '/gallery/videos/walkthrough.mp4', type: 'video', poster: '/gallery/signature-poster.jpg' },
+          { src: '/gallery/signature/elevator-1.jpg', type: 'image' },
+          { src: '/gallery/signature/elevator-2.jpg', type: 'image' },
         ],
       },
     ],
