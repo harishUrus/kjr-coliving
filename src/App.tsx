@@ -4,6 +4,7 @@ import { Header } from './components/Header'
 import { Hero } from './components/Hero'
 import { About } from './components/About'
 import { Properties } from './components/Properties'
+import { Testimonials } from './components/Testimonials'
 import { RoomOptions } from './components/RoomOptions'
 import { Amenities } from './components/Amenities'
 import { WhyChoose } from './components/WhyChoose'
@@ -25,6 +26,7 @@ function App() {
         <Hero />
         <About />
         <Properties />
+        <Testimonials />
         <RoomOptions />
         <Amenities />
         <WhyChoose />
