@@ -4,8 +4,10 @@ import ScrollTrigger from 'gsap/ScrollTrigger'
 import { ArrowRight, Images, MessageCircle } from 'lucide-react'
 import { PROPERTIES } from '../data/properties'
 import { GALLERY } from '../data/gallery'
+import { getPhotoTour } from '../data/photoTour'
 import { scrollToAppointmentForm, WHATSAPP_NUMBER } from '../lib/config'
 import { PropertyGalleryModal } from './PropertyGalleryModal'
+import { PhotoTourModal } from './PhotoTourModal'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -28,6 +30,10 @@ export function Properties() {
   }, [])
 
   const activeMedia = openGallery ? GALLERY.filter((m) => m.propertySlug === openGallery) : []
+  const activeTour = openGallery
+    ? getPhotoTour(openGallery as 'kjr-elite' | 'kjr-signature' | 'kjr-platinum')
+    : null
+  const activeProperty = PROPERTIES.find((p) => p.slug === openGallery)
 
   return (
     <section id="properties" ref={ref} className="relative bg-cream px-3 py-20 sm:px-5 lg:py-28">
@@ -77,7 +83,7 @@ export function Properties() {
                     className="flex items-center justify-center gap-2 rounded-full border border-charcoal/15 px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors duration-300 hover:border-terracotta hover:text-terracotta"
                   >
                     <Images className="h-4 w-4" />
-                    View Gallery
+                    {getPhotoTour(property.slug) ? 'Photo Tour' : 'View Gallery'}
                   </button>
                   {property.comingSoon ? (
                     <span className="flex items-center justify-center gap-2 rounded-full border border-charcoal/10 bg-stone px-5 py-2.5 text-sm font-semibold text-muted">
@@ -111,7 +117,10 @@ export function Properties() {
         </div>
       </div>
 
-      {openGallery && (
+      {openGallery && activeTour && activeProperty && (
+        <PhotoTourModal tour={activeTour} propertyName={activeProperty.name} onClose={() => setOpenGallery(null)} />
+      )}
+      {openGallery && !activeTour && (
         <PropertyGalleryModal media={activeMedia} startIndex={0} onClose={() => setOpenGallery(null)} />
       )}
     </section>
