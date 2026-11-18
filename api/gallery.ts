@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { del, list, put } from '@vercel/blob'
-import { verifyToken } from './_lib/auth'
+import { verifyToken } from './_lib/auth.js'
 
 const PROPERTIES = ['kjr-elite', 'kjr-signature', 'kjr-platinum'] as const
 type Property = (typeof PROPERTIES)[number]
