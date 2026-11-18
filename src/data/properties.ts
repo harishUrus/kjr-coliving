@@ -10,6 +10,7 @@ export type Property = {
   location: string | null
   roomCategories: RoomCategory[] | null
   heroImage: string
+  comingSoon?: boolean
 }
 
 export const PROPERTIES: Property[] = [
@@ -42,5 +43,6 @@ export const PROPERTIES: Property[] = [
     location: null,
     roomCategories: null,
     heroImage: '/gallery/room-4.jpg',
+    comingSoon: true,
   },
 ]
