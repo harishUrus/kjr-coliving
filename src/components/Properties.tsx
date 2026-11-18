@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
-import { ArrowRight, Images, MessageCircle } from 'lucide-react'
+import { ArrowRight, Images, MapPin, MessageCircle, Star } from 'lucide-react'
 import { PROPERTIES } from '../data/properties'
 import { GALLERY } from '../data/gallery'
 import { getPhotoTour } from '../data/photoTour'
@@ -83,6 +83,29 @@ export function Properties() {
               <div className="flex flex-1 flex-col p-6">
                 <h3 className="font-display text-2xl text-charcoal">{property.name}</h3>
                 <p className="mt-1 text-sm font-medium text-terracotta">{property.tagline}</p>
+
+                {(property.location || property.googleRating) && (
+                  <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+                    {property.googleRating && (
+                      <span className="flex items-center gap-1 text-xs font-semibold text-charcoal">
+                        <Star className="h-3.5 w-3.5 fill-terracotta text-terracotta" />
+                        {property.googleRating.score} ({property.googleRating.count} Google reviews)
+                      </span>
+                    )}
+                    {property.location && property.mapLink && (
+                      <a
+                        href={property.mapLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 text-xs text-muted underline-offset-2 hover:text-terracotta hover:underline"
+                      >
+                        <MapPin className="h-3.5 w-3.5 text-terracotta" />
+                        {property.location}
+                      </a>
+                    )}
+                  </div>
+                )}
+
                 <p className="mt-3 flex-1 text-sm leading-relaxed text-body">
                   {property.description}
                   {property.comingSoon && ' Opening soon — reach out to be notified first.'}

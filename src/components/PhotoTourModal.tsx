@@ -44,7 +44,7 @@ export function PhotoTourModal({ tour, propertyName, onClose }: Props) {
             >
               <div className="aspect-square overflow-hidden rounded-xl border border-charcoal/10">
                 <img
-                  src={cat.images[0]}
+                  src={cat.thumbnail}
                   alt={cat.label}
                   className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
@@ -64,9 +64,20 @@ export function PhotoTourModal({ tour, propertyName, onClose }: Props) {
           >
             <h3 className="font-display text-xl text-charcoal sm:text-2xl">{cat.label}</h3>
             <div className="relative mt-5 flex flex-col gap-4">
-              {cat.images.map((src) => (
-                <div key={src} className="overflow-hidden rounded-2xl">
-                  <img src={src} alt={cat.label} className="w-full object-cover" />
+              {cat.items.map((item) => (
+                <div key={item.src} className="overflow-hidden rounded-2xl">
+                  {item.type === 'video' ? (
+                    <video
+                      src={item.src}
+                      poster={item.poster}
+                      controls
+                      muted
+                      playsInline
+                      className="w-full object-cover"
+                    />
+                  ) : (
+                    <img src={item.src} alt={cat.label} className="w-full object-cover" />
+                  )}
                 </div>
               ))}
 

@@ -1,7 +1,14 @@
+export type PhotoTourMedia = {
+  src: string
+  type: 'image' | 'video'
+  poster?: string
+}
+
 export type PhotoTourCategory = {
   id: string
   label: string
-  images: string[]
+  thumbnail: string
+  items: PhotoTourMedia[]
 }
 
 export type PhotoTour = {
@@ -9,9 +16,9 @@ export type PhotoTour = {
   categories: PhotoTourCategory[]
 }
 
-// Categorized real photos, Airbnb-style "photo tour" layout. Only KJR Elite
-// has confirmed categorized photos so far — add Signature/Platinum here once
-// their photos are categorized by the KJR team.
+// Categorized real photos/videos, Airbnb-style "photo tour" layout. Only
+// Elite and Signature have confirmed categorized content so far — add
+// Platinum here once its photos are categorized by the KJR team.
 export const PHOTO_TOURS: PhotoTour[] = [
   {
     propertySlug: 'kjr-elite',
@@ -19,27 +26,44 @@ export const PHOTO_TOURS: PhotoTour[] = [
       {
         id: 'bedroom',
         label: 'Bedroom',
-        images: [
-          '/gallery/elite/bedroom-1.jpg',
-          '/gallery/elite/bedroom-2.jpg',
-          '/gallery/elite/bedroom-3.jpg',
-          '/gallery/elite/bedroom-4.jpg',
+        thumbnail: '/gallery/elite/bedroom-1.jpg',
+        items: [
+          { src: '/gallery/elite/bedroom-1.jpg', type: 'image' },
+          { src: '/gallery/elite/bedroom-2.jpg', type: 'image' },
+          { src: '/gallery/elite/bedroom-3.jpg', type: 'image' },
+          { src: '/gallery/elite/bedroom-4.jpg', type: 'image' },
         ],
       },
       {
         id: 'wardrobe',
         label: 'Wardrobe',
-        images: ['/gallery/elite/wardrobe-1.jpg'],
+        thumbnail: '/gallery/elite/wardrobe-1.jpg',
+        items: [{ src: '/gallery/elite/wardrobe-1.jpg', type: 'image' }],
       },
       {
         id: 'bathroom',
         label: 'Full Bathroom',
-        images: ['/gallery/elite/bathroom-1.jpg'],
+        thumbnail: '/gallery/elite/bathroom-1.jpg',
+        items: [{ src: '/gallery/elite/bathroom-1.jpg', type: 'image' }],
       },
       {
         id: 'kitchen',
         label: 'Kitchenette',
-        images: ['/gallery/elite/kitchen-1.jpg'],
+        thumbnail: '/gallery/elite/kitchen-1.jpg',
+        items: [{ src: '/gallery/elite/kitchen-1.jpg', type: 'image' }],
+      },
+    ],
+  },
+  {
+    propertySlug: 'kjr-signature',
+    categories: [
+      {
+        id: 'video-tour',
+        label: 'Video Tour',
+        thumbnail: '/gallery/signature-poster.jpg',
+        items: [
+          { src: '/gallery/videos/walkthrough.mp4', type: 'video', poster: '/gallery/signature-poster.jpg' },
+        ],
       },
     ],
   },
