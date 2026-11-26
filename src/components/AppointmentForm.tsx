@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { ArrowRight, ShieldCheck } from 'lucide-react'
 import { PROPERTIES } from '../data/properties'
 
-const TIME_SLOTS = ['10:00 AM – 12:00 PM', '12:00 PM – 2:00 PM', '2:00 PM – 4:00 PM', '4:00 PM – 6:00 PM']
 const ROOM_CATEGORIES = ['Single Sharing', 'Two Sharing', 'Three Sharing']
 
 export function AppointmentForm() {
@@ -100,17 +99,8 @@ export function AppointmentForm() {
                 <Field label="Preferred Visit Date">
                   <input required type="date" name="visitDate" className="estimate-input" />
                 </Field>
-                <Field label="Preferred Time Slot">
-                  <select required name="visitTime" defaultValue="" className="estimate-input">
-                    <option value="" disabled>
-                      Select a slot
-                    </option>
-                    {TIME_SLOTS.map((t) => (
-                      <option key={t} value={t}>
-                        {t}
-                      </option>
-                    ))}
-                  </select>
+                <Field label="Preferred Time">
+                  <input required type="time" name="visitTime" className="estimate-input" />
                 </Field>
               </div>
 

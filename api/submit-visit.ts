@@ -50,7 +50,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     ['Selected Property', property],
     ['Room Category', roomCategory],
     ['Preferred Visit Date', visitDate],
-    ['Preferred Time Slot', visitTime],
+    ['Preferred Time', visitTime],
     ['Expected Move-in Date', moveIn],
     ['Additional Requirements', requirements],
   ]
