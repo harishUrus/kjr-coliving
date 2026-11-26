@@ -1,40 +1,34 @@
 import { useState } from 'react'
 import { ArrowRight, ShieldCheck } from 'lucide-react'
 import { PROPERTIES } from '../data/properties'
-import { NOTIFICATION_EMAIL } from '../lib/config'
 
 const TIME_SLOTS = ['10:00 AM – 12:00 PM', '12:00 PM – 2:00 PM', '2:00 PM – 4:00 PM', '4:00 PM – 6:00 PM']
 const ROOM_CATEGORIES = ['Single Sharing', 'Two Sharing', 'Three Sharing']
 
 export function AppointmentForm() {
   const [submitted, setSubmitted] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const data = Object.fromEntries(new FormData(e.currentTarget)) as Record<string, string>
 
-    // Interim "mail directly" submission while the AWS Lambda + SES
-    // appointment backend is not yet provisioned — opens the visitor's mail
-    // client with the request pre-filled to NOTIFICATION_EMAIL. Swap this
-    // for a fetch() to the real appointment API once it exists; the form UX
-    // does not need to change.
-    const lines = [
-      `Visitor Name: ${data.name}`,
-      `Mobile Number: ${data.phone}`,
-      data.email ? `Email: ${data.email}` : null,
-      `Selected Property: ${data.property}`,
-      data.roomCategory ? `Room Category: ${data.roomCategory}` : null,
-      `Preferred Visit Date: ${data.visitDate}`,
-      `Preferred Time Slot: ${data.visitTime}`,
-      data.moveIn ? `Expected Move-in Date: ${data.moveIn}` : null,
-      data.requirements ? `Additional Requirements: ${data.requirements}` : null,
-    ].filter(Boolean)
-
-    const subject = encodeURIComponent('New Property Visit Request | KJR Co-Living')
-    const body = encodeURIComponent(lines.join('\n'))
-    window.location.href = `mailto:${NOTIFICATION_EMAIL}?subject=${subject}&body=${body}`
-
-    setSubmitted(true)
+    setSending(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/submit-visit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+      if (!res.ok) throw new Error('Failed to submit')
+      setSubmitted(true)
+    } catch {
+      setError('Something went wrong sending your request. Please try again, or WhatsApp us directly.')
+    } finally {
+      setSending(false)
+    }
   }
 
   return (
@@ -140,11 +134,14 @@ export function AppointmentForm() {
                 <textarea name="requirements" rows={3} placeholder="Anything else we should know?" className="estimate-input resize-none" />
               </Field>
 
+              {error && <p className="text-sm text-red-600">{error}</p>}
+
               <button
                 type="submit"
-                className="group mt-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-terracotta px-6 py-4 text-sm font-semibold tracking-wide text-white transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:shadow-lg"
+                disabled={sending}
+                className="group mt-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-terracotta px-6 py-4 text-sm font-semibold tracking-wide text-white transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-60"
               >
-                Submit Visit Request
+                {sending ? 'Sending…' : 'Submit Visit Request'}
                 <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
               </button>
 

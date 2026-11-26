@@ -9,11 +9,6 @@ export const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIC
 export const PHONE_NUMBER = '+91 95000 81331'
 export const PHONE_LINK = 'tel:+919500081331'
 
-// Appointment/visit-request notifications go here until the real AWS
-// Lambda + SES backend is provisioned. Swap this for the verified business
-// address before go-live.
-export const NOTIFICATION_EMAIL = 'info@kjrcoliving.com'
-
 export function scrollToSection(id: string) {
   const el = document.getElementById(id)
   if (!el) return
